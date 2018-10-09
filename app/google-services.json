@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "248776249456",
+    "firebase_url": "https://scgpay-4265c.firebaseio.com",
+    "project_id": "scgpay-4265c",
+    "storage_bucket": "scgpay-4265c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248776249456:android:ae2ef4368df5ea52",
+        "android_client_info": {
+          "package_name": "com.digiwallet.scgpay.scgpay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248776249456-t7s3r3qa9cqn9c7n4f3o1jt95ftd7a0h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digiwallet.scgpay.scgpay",
+            "certificate_hash": "75be4c160eccd8b97b9c99a8c311a178d620526f"
+          }
+        },
+        {
+          "client_id": "248776249456-ggq4e7rarvnva2d0uj0tovf3tpt7inv0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQpNkgoAVO7rqUXVYJ2mMLawI8JB53N7U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248776249456-ggq4e7rarvnva2d0uj0tovf3tpt7inv0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

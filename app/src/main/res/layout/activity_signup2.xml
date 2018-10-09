@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    tools:context=".Signup2Activity">
+
+    <EditText
+        android:id="@+id/nameField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="Name ..."
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/mobileField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/nameField"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Mobile Number ..."
+        android:inputType="phone" />
+
+    <EditText
+        android:id="@+id/addressField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/mobileField"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Address ..."
+        android:inputType="textMultiLine" />
+
+    <EditText
+        android:id="@+id/cityField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/addressField"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="City ..."
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/upiField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/cityField"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="UPI ..."
+        android:inputType="numberPassword"
+        android:maxLength="4"
+        android:numeric="integer" />
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/upiField"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="Continue"
+        android:textSize="18sp" />
+</RelativeLayout>

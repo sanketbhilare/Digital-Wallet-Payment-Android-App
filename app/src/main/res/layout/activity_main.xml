@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:id="@+id/balanceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:text="Balance"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/rupeesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/balanceCard"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text="Rs."
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/balanceField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/rupeesText"
+            android:layout_toEndOf="@+id/rupeesText"
+            android:padding="5dp"
+            android:text="123"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/amountField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/rupeesText"
+            android:layout_margin="30dp"
+            android:ems="10"
+            android:hint="Enter Amt to be added ..."
+            android:inputType="numberDecimal"
+            android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/upiField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/amountField"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:ems="10"
+        android:hint="UPI Pin ..."
+        android:inputType="numberPassword"
+        android:maxLength="4"
+        android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/atwButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/upiField"
+            android:layout_margin="30dp"
+            android:background="@color/colorPrimary"
+            android:text="Add to Wallet"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/signOutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/atwButton"
+            android:layout_margin="30dp"
+            android:background="@color/colorPrimary"
+            android:text="Sign Out"
+            android:textSize="12sp" />
+    </RelativeLayout>
