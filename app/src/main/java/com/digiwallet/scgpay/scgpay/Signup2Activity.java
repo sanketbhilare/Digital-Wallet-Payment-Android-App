@@ -26,10 +26,12 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
     EditText cityField;
     EditText upiField;
     FirebaseUser user;
-    DatabaseReference databaseUsers;
+    DatabaseReference databaseUsers,databaseEmailUid;
     private FirebaseAuth mAuth;
     String[] Banks={"HDFC","ICICI","SBI","Axis"};
     java.util.Random random = new java.util.Random();
+
+    Uid uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +54,17 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
     public void userSignup()
     {
 
-        databaseUsers = FirebaseDatabase.getInstance().getReference("Users");
+        databaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        databaseEmailUid = FirebaseDatabase.getInstance().getReference().child("EmailUid");
         String name = nameField.getText().toString().trim();
         String mobile =mobileField.getText().toString().trim();
         String address=addressField.getText().toString().trim();
         String city=cityField.getText().toString().trim();
         String upi =upiField.getText().toString().trim();
         String bankName = Banks[random.nextInt(Banks.length)];
+
+        String email = user.getEmail().replace(".",",");
+        uid=new Uid(user.getUid());
 
 
         if(name.isEmpty())
@@ -69,7 +75,7 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
         }
         if(mobile.isEmpty()||mobile.length()<10)
         {
-            mobileField.setError("Email required");
+            mobileField.setError("Mobile No. required");
             mobileField.requestFocus();
             return;
         }
@@ -101,6 +107,19 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        databaseEmailUid.child(email).setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Registered Successfully", Toast.LENGTH_SHORT).show();
                     finish();
                     startActivity(new Intent(Signup2Activity.this, MainActivity.class));
 
@@ -109,6 +128,9 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
                 }
             }
         });
+
+
+
 
     }
 

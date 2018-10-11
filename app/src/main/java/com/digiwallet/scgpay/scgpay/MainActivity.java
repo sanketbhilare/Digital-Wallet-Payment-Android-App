@@ -2,13 +2,20 @@ package com.digiwallet.scgpay.scgpay;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.design.widget.NavigationView;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,9 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseUser currentUser;
     DatabaseReference userData,usersRef,userRef;
     TextView balanceField;
-    TextView amountField;
-    TextView upiField;
+    EditText amountField,upiField;
     User user;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle abdt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +46,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
 
         balanceField = (TextView) findViewById(R.id.balanceField);
-        amountField = (TextView) findViewById(R.id.amountField);
-        upiField = (TextView) findViewById(R.id.upiField);
+        amountField = (EditText) findViewById(R.id.amountField);
+        upiField = (EditText) findViewById(R.id.upiField);
 
 
         findViewById(R.id.atwButton).setOnClickListener(this);
         findViewById(R.id.signOutButton).setOnClickListener(this);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        int id = menuItem.getItemId();
+//
+                        if (id == R.id.addToWallet) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        }
+
+                        if (id == R.id.transfer) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
+                        }
+
+                        if (id == R.id.myprofile) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
+                        }
+
+                        if (id == R.id.signout) {
+                            mAuth.signOut();
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        }
+
+                        if (id == R.id.settings) {
+                            Toast.makeText(MainActivity.this, "Settings !", Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+                    }
+                });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -52,12 +118,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
-        if(currentUser==null){
-            finish();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        }
+//        if(currentUser==null){
+//            finish();
+//            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//        }
 
-        usersRef=FirebaseDatabase.getInstance().getReference("Users");
+        usersRef=FirebaseDatabase.getInstance().getReference().child("Users");
         userRef=usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         userRef.addValueEventListener(new ValueEventListener() {
@@ -88,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             case R.id.signOutButton:{
-                FirebaseAuth.getInstance().signOut();
+                mAuth.signOut();
                 finish();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;
@@ -105,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(amount<=user.bankBalance){
                     user.bankBalance-=amount;
                     user.walletBalance+=amount;
-                    userData = FirebaseDatabase.getInstance().getReference("Users");
+                    userData = FirebaseDatabase.getInstance().getReference().child("Users");
                     userData.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

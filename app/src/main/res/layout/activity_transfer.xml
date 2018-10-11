@@ -1,91 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".TransferActivity">
 
-    <TextView
-        android:id="@+id/balanceCard"
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        android:padding="5dp"
-        android:text="Balance"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="36sp" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/rupeesText"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    </FrameLayout>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".TransferActivity">
+
+        <TextView
+            android:id="@+id/balanceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="55dp"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:text="Bank Transfer"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/rupeesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/balanceCard"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text="Rs."
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/balanceField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/rupeesText"
+            android:layout_toEndOf="@+id/rupeesText"
+            android:padding="5dp"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/amountField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/emailField"
+            android:layout_alignParentStart="true"
+            android:layout_margin="15dp"
+            android:ems="10"
+            android:hint="Amount"
+            android:inputType="numberDecimal"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/upiField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/amountField"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:ems="10"
+            android:hint="UPI Pin ..."
+            android:inputType="numberPassword"
+            android:maxLength="4"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/transferButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upiField"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@color/colorPrimary"
+            android:text="Transfer"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/emailField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rupeesText"
+            android:layout_alignParentStart="true"
+            android:layout_margin="15dp"
+            android:ems="10"
+            android:hint="Email ..."
+            android:inputType="textEmailAddress"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/balanceCard"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:padding="5dp"
-        android:text="Rs."
-        android:textSize="30sp" />
-
-    <TextView
-        android:id="@+id/balanceField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/rupeesText"
-        android:layout_toEndOf="@+id/rupeesText"
-        android:padding="5dp"
-        android:text="123"
-        android:textSize="30sp" />
-
-    <EditText
-        android:id="@+id/amountField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/emailField"
-        android:layout_margin="15dp"
-        android:ems="10"
-        android:hint="Amount"
-        android:inputType="numberDecimal"
-        android:textSize="30sp" />
-
-    <EditText
-        android:id="@+id/upiField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/amountField"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:digits="4"
-        android:ems="10"
-        android:hint="UPI Pin ..."
-        android:inputType="numberPassword"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/transferButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/upiField"
-        android:layout_margin="30dp"
-        android:background="@color/colorPrimary"
-        android:text="Transfer"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/emailField"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/rupeesText"
-        android:layout_margin="15dp"
-        android:ems="10"
-        android:hint="Email ..."
-        android:inputType="textEmailAddress"
-        android:textSize="30sp" />
-
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/navigation_menu"
+        app:headerLayout="@layout/navigation_header" />
+</android.support.v4.widget.DrawerLayout>

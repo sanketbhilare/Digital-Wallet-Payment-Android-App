@@ -16,18 +16,23 @@
         android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Name ..."
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/mobileField"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/nameField"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Mobile Number ..."
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:maxLength="10" />
 
     <EditText
         android:id="@+id/addressField"
@@ -38,6 +43,8 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Address ..."
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:inputType="textMultiLine" />
 
     <EditText
@@ -49,6 +56,8 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="City ..."
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:inputType="textPersonName" />
 
     <EditText
@@ -62,7 +71,8 @@
         android:hint="UPI ..."
         android:inputType="numberPassword"
         android:maxLength="4"
-        android:numeric="integer" />
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white" />
 
     <Button
         android:id="@+id/continueButton"

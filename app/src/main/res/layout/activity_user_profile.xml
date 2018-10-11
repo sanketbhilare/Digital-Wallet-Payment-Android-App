@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
+
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    </FrameLayout>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,40 +35,103 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="55dp"
         android:background="@color/colorPrimary"
         android:padding="5dp"
-        android:text="User Profile"
+        android:text="My Profile"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/emailField"
+    <TextView
+        android:id="@+id/emailText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/userProfileCard"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/emailText"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="sanketbhilare@gmail.com"
+        android:layout_margin="10dp"
+        android:text="Email ..."
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/emailText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/userProfileCard"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:text="Email"
-        android:textSize="18sp" />
-
-    <android.support.v7.widget.CardView
+        android:id="@+id/nameText"
         android:layout_width="match_parent"
-        android:layout_height="392dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emailText"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="211dp" />
+        android:layout_margin="10dp"
+        android:text="Name ..."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/mobileText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="Mobile ..."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/bankNameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mobileText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="Bank Name ..."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/addressText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bankNameText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="Address ..."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/cityText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addressText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="City ..."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/wBalanceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cityText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="Wallet Balance ..."
+        android:textSize="24sp" />
+    <TextView
+        android:id="@+id/bBalanceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wBalanceText"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:text="Bank Balance ..."
+        android:textSize="24sp" />
+    
+
 
 
 </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/navigation_menu"
+        app:headerLayout="@layout/navigation_header" />
+</android.support.v4.widget.DrawerLayout>

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SCGPay</string>
+    <string name="Open">SCGPay</string>
+    <string name="Close">SCGPay</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
