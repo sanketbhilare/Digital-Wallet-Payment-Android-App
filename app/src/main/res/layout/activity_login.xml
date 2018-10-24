@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
+    android:background="@drawable/bg"
     tools:context=".LoginActivity">
 
     <EditText
@@ -14,8 +14,11 @@
         android:layout_below="@+id/imageView"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
+        android:background="#11000000"
+        android:drawableLeft="@drawable/ic_person_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Email..."
+        android:hint="Email"
         android:inputType="textEmailAddress"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textColorHint="@android:color/white"
@@ -28,8 +31,11 @@
         android:layout_below="@+id/emailField"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
+        android:background="#11000000"
+        android:drawableLeft="@drawable/ic_lock_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Password..."
+        android:hint="Password"
         android:inputType="textPassword"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
@@ -42,8 +48,7 @@
         android:layout_below="@+id/passwordField"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="LOGIN"
-        android:theme="@style/AppTheme" />
+        android:text="LOGIN" />
 
     <ImageView
         android:id="@+id/imageView"

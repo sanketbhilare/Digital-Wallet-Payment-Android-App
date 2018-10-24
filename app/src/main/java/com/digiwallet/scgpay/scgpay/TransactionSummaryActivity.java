@@ -8,8 +8,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,33 +29,44 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserProfileActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    private FirebaseAuth mAuth;
+public class TransactionSummaryActivity extends AppCompatActivity {
+
+
     FirebaseUser currentUser;
-    DatabaseReference usersRef, userRef;
-
-    TextView emailText, nameText, mobileText, bankNameText, addressText, cityText, bBalanceText, wBalanceText;
-    User user;
+    DatabaseReference transactionsDataRef;
+    TextView balanceField;
+    Transaction transaction;
+    String email1;
+    ArrayList<Transaction> userTransactions;
+    private FirebaseAuth mAuth;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle abdt;
+
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-
-        emailText = (TextView) findViewById(R.id.emailText);
-        nameText = (TextView) findViewById(R.id.nameText);
-        mobileText = (TextView) findViewById(R.id.mobileText);
-        bankNameText = (TextView) findViewById(R.id.bankNameText);
-        addressText = (TextView) findViewById(R.id.addressText);
-        cityText = (TextView) findViewById(R.id.cityText);
-        wBalanceText = (TextView) findViewById(R.id.wBalanceText);
-        bBalanceText = (TextView) findViewById(R.id.bBalanceText);
+        setContentView(R.layout.activity_transaction_summary);
 
         mAuth = FirebaseAuth.getInstance();
-        currentUser=mAuth.getCurrentUser();
+        transactionsDataRef = FirebaseDatabase.getInstance().getReference().child("Transactions");
+        email1 = mAuth.getCurrentUser().getEmail().replace(".", ",");
+
+        userTransactions = new ArrayList<>();
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -69,7 +88,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         mDrawerLayout.closeDrawers();
 
                         int id = menuItem.getItemId();
-
+//
                         if (id == R.id.addToWallet) {
                             finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -81,7 +100,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
 
                         if (id == R.id.myprofile) {
-                            Toast.makeText(UserProfileActivity.this, "Your Profile !", Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
                         }
 
                         if (id == R.id.signout) {
@@ -91,8 +111,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         }
 
                         if (id == R.id.transactionSummary) {
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), TransactionSummaryActivity.class));
+                            Toast.makeText(getApplicationContext(), "Already Open !!!", Toast.LENGTH_SHORT).show();
+
                         }
 
                         return true;
@@ -115,37 +135,81 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        userTransactions.clear();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
 //        if(currentUser==null){
 //            finish();
 //            startActivity(new Intent(MainActivity.this, LoginActivity.class));
 //        }
-        final String email = mAuth.getCurrentUser().getEmail();
 
-        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        userRef = usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        userRef.addValueEventListener(new ValueEventListener() {
+        transactionsDataRef.child(email1).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                emailText.setText("Email : "+email);
-                nameText.setText("Name : "+user.Name);
-                mobileText.setText("Mobile : "+user.mobileNo);
-                bankNameText.setText("Bank : "+user.bankName);
-                addressText.setText("Address : "+user.Address);
-                cityText.setText("City : "+user.City);
-                wBalanceText.setText("Wallet Balance : "+String.valueOf(user.walletBalance));
-                bBalanceText.setText("Bank Balance : "+String.valueOf(user.bankBalance));
+                for (DataSnapshot userT : dataSnapshot.getChildren()) {
+                    Log.d("EXACTLY", userT.getValue() + "");
+                    userTransactions.add(userT.getValue(Transaction.class));
+                }
+                mAdapter = new MyAdapter(userTransactions);
+                recyclerView.setAdapter(mAdapter);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(getApplicationContext(), "Something Happened!!! Couldn't load your balance.", Toast.LENGTH_SHORT).show();
-
             }
         });
+
+
     }
 
+
 }
+
+
+class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+    private ArrayList<Transaction> mDataset;
+
+    public MyAdapter(ArrayList<Transaction> myDataset) {
+        mDataset = myDataset;
+    }
+
+    @Override
+    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_card, parent, false);
+        MyViewHolder vh = new MyViewHolder(v);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        Transaction t = mDataset.get(position);
+        holder.amountField.setText(String.valueOf(t.getAmount()));
+        holder.txnidField.setText(String.valueOf(t.getTxn_id()));
+        holder.toField.setText(t.getTo_id());
+        holder.timeStampField.setText(t.getTimeStamp());
+        holder.issuerBankField.setText(t.getIssuerBank());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mDataset.size();
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView amountField, txnidField, toField, timeStampField, issuerBankField;
+
+        public MyViewHolder(View v) {
+            super(v);
+            amountField = (TextView) v.findViewById(R.id.amountField);
+            txnidField = (TextView) v.findViewById(R.id.txnidField);
+            toField = (TextView) v.findViewById(R.id.toField);
+            timeStampField = (TextView) v.findViewById(R.id.timeStampField);
+            issuerBankField = (TextView) v.findViewById(R.id.issuerBankField);
+
+        }
+    }
+}
+

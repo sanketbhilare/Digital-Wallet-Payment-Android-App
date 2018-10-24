@@ -1,6 +1,5 @@
 package com.digiwallet.scgpay.scgpay;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +25,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText emailField;
     EditText passwordField;
     ProgressBar progressBar;
+    Button loginButton;
+    TextView signUpText;
 
 
     public void userLogin()
@@ -87,6 +89,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         emailField = (EditText) findViewById(R.id.emailField);
         passwordField = (EditText) findViewById(R.id.passwordField);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        loginButton = (Button) findViewById(R.id.loginButton);
+        signUpText = (TextView) findViewById(R.id.signUpText);
+
+
+        if (AppStatus.getInstance(this).isOnline()) {
+
+            Toast.makeText(this, "You are online!!!!", Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            emailField.setFocusable(false);
+            passwordField.setFocusable(false);
+
+            Toast.makeText(this, "Please check your connection!!! And restart the app", Toast.LENGTH_LONG).show();
+        }
 
         mAuth = FirebaseAuth.getInstance();
 

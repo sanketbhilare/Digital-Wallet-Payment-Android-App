@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.NavigationView;
@@ -27,16 +26,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
-    DatabaseReference userData,usersRef,userRef;
+    DatabaseReference userData, usersRef, userRef, transactionsDataRef;
     TextView balanceField;
     EditText amountField,upiField;
     User user;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle abdt;
+    Transaction transaction;
+    String email1, email2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         amountField = (EditText) findViewById(R.id.amountField);
         upiField = (EditText) findViewById(R.id.upiField);
 
+        transactionsDataRef = FirebaseDatabase.getInstance().getReference().child("Transactions");
+        email1 = mAuth.getCurrentUser().getEmail();
+        email2 = email1.replace(".", ",");
+
+
+
 
         findViewById(R.id.atwButton).setOnClickListener(this);
-        findViewById(R.id.signOutButton).setOnClickListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,9 +101,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }
 
-                        if (id == R.id.settings) {
-                            Toast.makeText(MainActivity.this, "Settings !", Toast.LENGTH_SHORT).show();
+                        if (id == R.id.transactionSummary) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), TransactionSummaryActivity.class));
                         }
+
                         return true;
                     }
                 });
@@ -126,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         usersRef=FirebaseDatabase.getInstance().getReference().child("Users");
         userRef=usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
@@ -148,15 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(v.getId()){
             case R.id.atwButton: {
                 addToWallet();
-                finish();
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
-                break;
-            }
-
-            case R.id.signOutButton:{
-                mAuth.signOut();
-                finish();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 break;
             }
         }
@@ -164,7 +164,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addToWallet(){
         String upiPin = upiField.getText().toString().trim();
-        final Double amount = Double.parseDouble(amountField.getText().toString().trim());
+        String amt = amountField.getText().toString().trim();
+
+        if (amt.isEmpty()) {
+            amountField.setError("Enter Valid Amount");
+            amountField.requestFocus();
+            return;
+        }
+        if (upiPin.isEmpty()) {
+            upiField.setError("UPI Pin Required");
+            upiField.requestFocus();
+            return;
+        }
+        if (upiPin.length() != 4) {
+            upiField.setError("Enter 4 digit UPI Pin");
+            upiField.requestFocus();
+            return;
+        }
+
+        final Double amount = Double.parseDouble(amt);
 
         if(upiPin.equals(user.upiPin)){
             if(!amountField.getText().toString().isEmpty()){
@@ -177,8 +195,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getApplicationContext(), "Rs. "+amount.toString()+" Added to Wallet Successfully", Toast.LENGTH_SHORT).show();
-                                finish();
-                                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                                transaction = new Transaction(email1, email1, user.bankName, amount);
+                                String txn_id = String.valueOf(transaction.txn_id);
+                                transactionsDataRef.child(email2).child(txn_id).setValue(transaction).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "Rs. " + amount.toString() + " Transaction Complete", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                            startActivity(new Intent(MainActivity.this, MainActivity.class));
+                                        }
+                                    }
+                                });
+                                Toast.makeText(getApplicationContext(), "Rs. " + amount.toString() + " Added to Wallet Successfully", Toast.LENGTH_SHORT).show();
+
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again", Toast.LENGTH_SHORT).show();
@@ -192,10 +222,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else {
                 Toast.makeText(getApplicationContext(), "Please enter a valid amount !!!", Toast.LENGTH_SHORT).show();
+                amountField.setError("Enter Valid Amount");
+                amountField.requestFocus();
+                return;
             }
         }
         else{
+
             Toast.makeText(getApplicationContext(), "Incorrect UPI Pin !!!", Toast.LENGTH_SHORT).show();
+            upiField.setError("Incorrect UPI Pin !!!");
+            upiField.requestFocus();
+            return;
         }
     }
 }

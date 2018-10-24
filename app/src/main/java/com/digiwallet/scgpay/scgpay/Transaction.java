@@ -7,7 +7,7 @@ public class Transaction {
 
     String timeStamp;
     String from_id,to_id;
-    double txn_id;
+    Long txn_id;
     String issuerBank;
     double amount;
 
@@ -20,7 +20,27 @@ public class Transaction {
         this.to_id = to_id;
         this.issuerBank = issuerBank;
         this.amount=amount;
-        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSS").format(Calendar.getInstance().getTime());
         txn_id = System.currentTimeMillis();
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Long getTxn_id() {
+        return txn_id;
+    }
+
+    public String getIssuerBank() {
+        return issuerBank;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public String getTo_id() {
+        return to_id;
     }
 }

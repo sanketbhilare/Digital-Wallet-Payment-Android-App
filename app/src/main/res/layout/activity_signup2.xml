@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
+    android:background="@drawable/bg"
     tools:context=".Signup2Activity">
 
     <EditText
@@ -14,11 +14,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:drawableLeft="@drawable/ic_person_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Name ..."
+        android:hint="Name"
+        android:inputType="textPersonName"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:inputType="textPersonName" />
+        android:textColorHint="@android:color/white" />
 
     <EditText
         android:id="@+id/mobileField"
@@ -27,25 +29,29 @@
         android:layout_below="@+id/nameField"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ic_phone_android_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Mobile Number ..."
+        android:hint="Mobile Number"
         android:inputType="phone"
+        android:maxLength="10"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:maxLength="10" />
+        android:textColorHint="@android:color/white" />
 
     <EditText
         android:id="@+id/addressField"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/mobileField"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ic_home_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="Address ..."
+        android:hint="Address"
+        android:inputType="textMultiLine"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:inputType="textMultiLine" />
+        android:textColorHint="@android:color/white" />
 
     <EditText
         android:id="@+id/cityField"
@@ -54,11 +60,13 @@
         android:layout_below="@+id/addressField"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ic_location_city_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="City ..."
+        android:hint="City"
+        android:inputType="textPersonName"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:inputType="textPersonName" />
+        android:textColorHint="@android:color/white" />
 
     <EditText
         android:id="@+id/upiField"
@@ -67,8 +75,10 @@
         android:layout_below="@+id/cityField"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/ic_vpn_key_white_24dp"
+        android:drawablePadding="10dp"
         android:ems="10"
-        android:hint="UPI ..."
+        android:hint="UPI"
         android:inputType="numberPassword"
         android:maxLength="4"
         android:textColor="@android:color/white"

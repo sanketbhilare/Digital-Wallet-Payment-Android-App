@@ -12,119 +12,123 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#1b2034">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/white"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     </FrameLayout>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".UserProfileActivity">
 
-    <TextView
-        android:id="@+id/userProfileCard"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="55dp"
-        android:background="@color/colorPrimary"
-        android:padding="5dp"
-        android:text="My Profile"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="30sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/emailText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userProfileCard"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Email ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/userProfileCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/headerbg"
+            android:drawableLeft="@drawable/ic_person_white_24dp"
+            android:drawablePadding="10dp"
+            android:fontFamily="serif-monospace"
+            android:padding="5dp"
+            android:text="My Profile"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="36sp" />
 
-    <TextView
-        android:id="@+id/nameText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/emailText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Name ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/emailText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Email ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/mobileText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Mobile ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Name ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/bankNameText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mobileText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Bank Name ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/mobileText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Mobile ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/addressText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bankNameText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Address ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/bankNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Bank Name ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/cityText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/addressText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="City ..."
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/addressText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Address ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/wBalanceText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cityText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Wallet Balance ..."
-        android:textSize="24sp" />
-    <TextView
-        android:id="@+id/bBalanceText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/wBalanceText"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:text="Bank Balance ..."
-        android:textSize="24sp" />
-    
+        <TextView
+            android:id="@+id/cityText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="City ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/wBalanceText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Wallet Balance ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/bBalanceText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="serif-monospace"
+            android:text="Bank Balance ..."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
 
 
-
-</RelativeLayout>
+    </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

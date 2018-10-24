@@ -35,14 +35,16 @@ public class TransferActivity extends AppCompatActivity implements View.OnClickL
     double amount;
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
-    DatabaseReference usersRef,userRef,emailUidRef,emailRef;
+    DatabaseReference usersRef, userRef, emailUidRef, emailRef, transactionsDataRef;
     User user1,user2;
     Uid Uid1,Uid2;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle abdt;
     Transaction transaction;
+    String email, email1, fromEmail, fromEmail1;
 
 
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class TransferActivity extends AppCompatActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
+
+        transactionsDataRef = FirebaseDatabase.getInstance().getReference().child("Transactions");
 
         Uid1 = new Uid(currentUser.getUid());
         Uid2 = new Uid();
@@ -104,9 +108,11 @@ public class TransferActivity extends AppCompatActivity implements View.OnClickL
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }
 
-                        if (id == R.id.settings) {
-                            Toast.makeText(TransferActivity.this, "Settings !", Toast.LENGTH_SHORT).show();
+                        if (id == R.id.transactionSummary) {
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), TransactionSummaryActivity.class));
                         }
+
                         return true;
                     }
                 });
@@ -154,96 +160,142 @@ public class TransferActivity extends AppCompatActivity implements View.OnClickL
 
 
     public void transact() {
-        final String email1 = emailField.getText().toString().trim();
-        amount = Double.parseDouble(amountField.getText().toString());
-        String upiPin = upiField.getText().toString().trim();
+        if (flag == 0) {
+            flag = 1;
+            email1 = emailField.getText().toString().trim();
+            String amt = amountField.getText().toString().trim();
+            final String upiPin = upiField.getText().toString().trim();
 
-        if(email1.isEmpty())
-        {
-            emailField.setError("Email required");
-            emailField.requestFocus();
-            return;
-        }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email1).matches())
-        {
-            emailField.setError("Enter a valid email");
-            emailField.requestFocus();
-            return;
-        }
-
-        String email = email1.replace(".",",");
-
-        emailUidRef=FirebaseDatabase.getInstance().getReference().child("EmailUid");
-        emailRef=emailUidRef.child(email);
-
-
-        emailRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Uid2 = dataSnapshot.getValue(Uid.class);
-                Log.d("Uid2",Uid2.uid);
-
+            if (email1.isEmpty()) {
+                emailField.setError("Email required");
+                emailField.requestFocus();
+                return;
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(), "Invalid email ID !!!", Toast.LENGTH_SHORT).show();
-                finish();
-                startActivity(new Intent(TransferActivity.this, TransferActivity.class));
+            if (!Patterns.EMAIL_ADDRESS.matcher(email1).matches()) {
+                emailField.setError("Enter a valid email");
+                emailField.requestFocus();
+                return;
             }
-        });
-
-        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        String id = Uid2.uid;
-        userRef=usersRef.child(id);
-
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user2 = dataSnapshot.getValue(User.class);
+            if (amt.isEmpty()) {
+                amountField.setError("Enter Valid Amount");
+                amountField.requestFocus();
+                return;
+            }
+            if (upiPin.isEmpty()) {
+                upiField.setError("UPI Pin Required");
+                upiField.requestFocus();
+                return;
+            }
+            if (upiPin.length() != 4) {
+                upiField.setError("Enter 4 digit UPI Pin");
+                upiField.requestFocus();
+                return;
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(), "Something Happened!!! Couldn't load your balance.", Toast.LENGTH_SHORT).show();
-                finish();
-                startActivity(new Intent(TransferActivity.this, TransferActivity.class));
+            amount = Double.parseDouble(amountField.getText().toString());
 
-            }
-        });
+            email = email1.replace(".", ",");
+            fromEmail1 = currentUser.getEmail().trim();
+            fromEmail = fromEmail1.replace(".", ",");
 
-        if(Uid2.uid!=null && user1.bankBalance<=amount && user1.upiPin.equals(upiPin)){
-            user1.bankBalance-=amount;
-            user2.bankBalance+=amount;
-            usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user1).addOnCompleteListener(new OnCompleteListener<Void>() {
+            emailUidRef = FirebaseDatabase.getInstance().getReference().child("EmailUid");
+            emailRef = emailUidRef.child(email);
+
+
+            emailRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        usersRef.child(Uid2.uid).setValue(user2).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    transaction = new Transaction(Uid1.uid,Uid2.uid,user1.bankName,amount);
-                                    Toast.makeText(getApplicationContext(), "Rs. "+amount+" Transferred to "+email1, Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    startActivity(new Intent(getApplicationContext(), TransferActivity.class));
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Uid2 = dataSnapshot.getValue(Uid.class);
+                    Log.d("Uid2", Uid2.uid + "  1");
 
+
+                    usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+                    final String id = Uid2.uid;
+                    userRef = usersRef.child(id);
+
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            user2 = dataSnapshot.getValue(User.class);
+
+                            if (user1.upiPin.equals(upiPin)) {
+                                if (user1.bankBalance >= amount) {
+                                    if (Uid2.uid != null) {
+                                        user1.bankBalance -= amount;
+                                        user2.bankBalance += amount;
+                                        usersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    usersRef.child(Uid2.uid).setValue(user2).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                transaction = new Transaction(fromEmail1, email1, user1.bankName, amount);
+                                                                String txn_id = String.valueOf(transaction.txn_id);
+                                                                transactionsDataRef.child(fromEmail).child(txn_id).setValue(transaction).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            Toast.makeText(getApplicationContext(), "Rs. " + amount + " Transferred to " + email1, Toast.LENGTH_SHORT).show();
+                                                                            finish();
+                                                                            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
+                                                                        }
+                                                                    }
+                                                                });
+
+
+                                                            } else {
+                                                                Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again  1", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again   2", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Please enter a valid user !!!", Toast.LENGTH_SHORT).show();
+                                        emailField.setError("Enter Valid User");
+                                        emailField.requestFocus();
+                                        return;
+                                    }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Please enter a valid amount !!!", Toast.LENGTH_SHORT).show();
+                                    amountField.setError("Enter Valid Amount");
+                                    amountField.requestFocus();
+                                    return;
                                 }
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Incorrect UPI Pin !!!", Toast.LENGTH_SHORT).show();
+                                upiField.setError("Incorrect UPI Pin !!!");
+                                upiField.requestFocus();
+                                return;
                             }
-                        });
+                        }
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(), "Something Happened!!! Couldn't load your balance.", Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(TransferActivity.this, TransferActivity.class));
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getApplicationContext(), "Invalid email ID !!!", Toast.LENGTH_SHORT).show();
+                    finish();
+                    startActivity(new Intent(TransferActivity.this, TransferActivity.class));
                 }
             });
-
         }
-        else{
-            Toast.makeText(getApplicationContext(), "Something Happened!!! Try Again", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     @Override

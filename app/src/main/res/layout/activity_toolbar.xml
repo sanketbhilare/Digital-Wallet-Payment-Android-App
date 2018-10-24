@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#404040"
+    tools:context="SCGPay">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#404040"
+        android:theme="@style/AppTheme"
+        app:popupTheme="@style/AppTheme"
+        app:titleTextColor="@color/common_google_signin_btn_text_dark_default" />
+
+</RelativeLayout>
