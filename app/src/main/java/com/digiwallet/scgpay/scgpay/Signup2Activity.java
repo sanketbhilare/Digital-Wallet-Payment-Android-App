@@ -152,4 +152,9 @@ public class Signup2Activity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

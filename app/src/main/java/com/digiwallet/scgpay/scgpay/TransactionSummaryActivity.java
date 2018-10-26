@@ -1,7 +1,10 @@
 package com.digiwallet.scgpay.scgpay;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -17,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +31,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+
+
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 
 public class TransactionSummaryActivity extends AppCompatActivity {
 
@@ -38,18 +52,20 @@ public class TransactionSummaryActivity extends AppCompatActivity {
     FirebaseUser currentUser;
     DatabaseReference transactionsDataRef;
     TextView balanceField;
+    public static final int REQUEST_PERM_WRITE_STORAGE = 102;
     Transaction transaction;
     String email1;
     ArrayList<Transaction> userTransactions;
+    public ArrayList<DataSnapshot> dslist;
     private FirebaseAuth mAuth;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle abdt;
+    Button pdfButton;
 
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,7 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         email1 = mAuth.getCurrentUser().getEmail().replace(".", ",");
 
         userTransactions = new ArrayList<>();
+        dslist = new ArrayList<>();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -147,12 +164,139 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         transactionsDataRef.child(email1).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                userTransactions.clear();
+                dslist.clear();
                 for (DataSnapshot userT : dataSnapshot.getChildren()) {
+                    dslist.add(userT);
                     Log.d("EXACTLY", userT.getValue() + "");
-                    userTransactions.add(userT.getValue(Transaction.class));
+                    transaction = userT.getValue(Transaction.class);
+                    userTransactions.add(transaction);
                 }
                 mAdapter = new MyAdapter(userTransactions);
                 recyclerView.setAdapter(mAdapter);
+                recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, final int position) {
+
+                        pdfButton = (Button) view.findViewById(R.id.pdfButton);
+
+
+                        pdfButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                transaction = userTransactions.get(position);
+                                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                                        PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(TransactionSummaryActivity.this,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                                } else {
+                                    // PDF Generation
+                                    Toast.makeText(getApplicationContext(), "Downloading...", Toast.LENGTH_SHORT).show();
+                                    Document doc = new Document();
+                                    try {
+                                        String path = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/PDF";
+                                        //Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+                                        File dir = new File(path);
+                                        if (!dir.exists()) {
+                                            dir.mkdirs();
+                                        }
+                                        Log.d("PDFCreator", "PDF Path: " + path);
+
+                                        //pdf of name invoice + vehicleType + vehicleNumber
+                                        File file = new File(dir, "invoice" + transaction.txn_id.toString() + ".pdf");
+                                        FileOutputStream fout = new FileOutputStream(file);
+
+                                        PdfWriter.getInstance(doc, fout);
+                                        doc.open();
+
+                                        //Toast.makeText(MainActivity.this, "Pressed", Toast.LENGTH_LONG).show();
+
+                                        Paragraph p = new Paragraph("SCGPAY");
+
+                                        p.setAlignment(Paragraph.ALIGN_CENTER);
+                                        doc.add(p);
+
+                                        LineSeparator lineSeparator = new LineSeparator();
+                                        lineSeparator.setLineColor(new BaseColor(0, 0, 0, 100));
+                                        doc.add(new Chunk(lineSeparator));
+
+                                        Paragraph title = new Paragraph("Transaction Summary");
+                                        title.setAlignment(Paragraph.ALIGN_CENTER);
+                                        doc.add(title);
+
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph date = new Paragraph("Transaction Date : " + transaction.timeStamp);
+                                        date.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(date);
+
+                                        //Section End
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph fromID = new Paragraph("From ID : " + transaction.from_id);
+                                        fromID.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(fromID);
+
+                                        //Section End
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph toID = new Paragraph("To ID : " + transaction.to_id);
+                                        toID.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(toID);
+
+                                        //Section End
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph amount = new Paragraph("Amount : " + transaction.amount);
+                                        amount.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(amount);
+
+                                        //Section End
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph txnID = new Paragraph("Txn ID :  " + transaction.txn_id);
+                                        txnID.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(txnID);
+
+                                        //Section End
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Paragraph issuerBank = new Paragraph("Issuer Bank: " + transaction.issuerBank);
+                                        issuerBank.setAlignment(Paragraph.ALIGN_LEFT);
+                                        doc.add(issuerBank);
+
+
+                                        doc.add(new Chunk(lineSeparator));
+
+
+                                        Toast.makeText(getApplicationContext(), "created PDF", Toast.LENGTH_LONG).show();
+                                    } catch (DocumentException de) {
+                                        // de.printStackTrace();
+                                        Log.e("PDFCreator", "Document Exception: " + de);
+                                    } catch (IOException ioe) {
+                                        //ioe.printStackTrace();
+                                        Log.e("PDFCreator", "IO Exception: " + ioe);
+                                    } finally {
+                                        doc.close();
+                                    }
+
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+
+                }));
             }
 
             @Override
@@ -162,6 +306,13 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
 
@@ -200,6 +351,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView amountField, txnidField, toField, timeStampField, issuerBankField;
+        public Button pdfButton;
 
         public MyViewHolder(View v) {
             super(v);
@@ -208,7 +360,19 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             toField = (TextView) v.findViewById(R.id.toField);
             timeStampField = (TextView) v.findViewById(R.id.timeStampField);
             issuerBankField = (TextView) v.findViewById(R.id.issuerBankField);
+            pdfButton = (Button) v.findViewById(R.id.pdfButton);
+            pdfButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (view.getId()) {
+                        case R.id.pdfButton: {
+                            int pos = getAdapterPosition();
+                            Toast.makeText(itemView.getContext(), "hehe", Toast.LENGTH_SHORT).show();
 
+                        }
+                    }
+                }
+            });
         }
     }
 }

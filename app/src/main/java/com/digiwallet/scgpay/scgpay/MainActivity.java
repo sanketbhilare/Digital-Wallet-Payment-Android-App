@@ -235,4 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        mAuth.signOut();
+        finish();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
 }

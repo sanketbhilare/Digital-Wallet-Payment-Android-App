@@ -157,6 +157,16 @@
                 android:textColor="#868ca1" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/pdfButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="12"
+            android:fontFamily="serif-monospace"
+
+            android:text="Download PDF" />
+
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

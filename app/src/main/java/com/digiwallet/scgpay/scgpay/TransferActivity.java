@@ -306,4 +306,11 @@ public class TransferActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
 }

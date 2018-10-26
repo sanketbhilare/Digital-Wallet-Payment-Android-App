@@ -69,6 +69,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                             startActivity(new Intent(SignupActivity.this, Signup2Activity.class));
                         } else {
 
+                            progressBar.setVisibility(View.GONE);
+
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
 
